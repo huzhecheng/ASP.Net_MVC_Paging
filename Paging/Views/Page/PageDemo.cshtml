@@ -1,0 +1,86 @@
+﻿@model Paging.Controllers.ViewModel
+
+@{
+	ViewBag.Title = "PageDemo";
+}
+
+<style>
+	table {
+		border: 2px solid #f9f9f9;
+		border-radius: 3px;
+		background-color: #fff;
+	}
+
+	th {
+		background-color: #42b2b9;
+		color: rgba(255,255,255,0.66);
+	}
+
+	td {
+		background-color: #f9f9f9;
+	}
+
+	th, td {
+		min-width: 120px;
+		padding: 10px 20px;
+	}
+
+	.pagination {
+		margin: 5px 0 !important;
+	}
+
+		.pagination > li > a {
+			font-size: 18px;
+			color: rgba(82, 80, 80, 0.86);
+			cursor: pointer;
+			padding: 6px 10px !important;
+			border: none;
+			border-radius: 0 !important;
+		}
+
+			.pagination > li > a:hover {
+				box-shadow: 4px 4px 12px -2px rgba(10%, 10%, 20%, .25);
+			}
+
+	.noactive {
+		display: none;
+	}
+
+	.nowpage {
+		color: rgb(255, 140, 0) !important;
+		font-weight: bolder;
+		border-bottom: 2px solid rgb(255, 140, 0) !important;
+	}
+</style>
+
+<div id="_PartialView">
+	@Html.Partial("~/Views/Page/_PartialView.cshtml")
+</div>
+
+
+@section scripts{
+	<script>
+		$(function () {
+			// Paged
+			$('#_PartialView').on('click', '.pagination > li > a', function (e) {
+				var Page = parseInt($(this).attr('index'));
+				GetData(Page);
+			});
+		})
+
+		function GetData(Page) {
+			$.ajax({
+				type: 'Post',
+				data: JSON.stringify({ 'Page': Page }),
+				contentType: 'application/json; charset=utf-8',
+				dataType: 'html',
+				url: '@Url.Action("PageDemo", "Page")',
+				success: function (data) {
+					$('#_PartialView').html(data);
+				}, error: function () {
+					alert('Error');
+				}
+			});
+		}
+	</script>
+}

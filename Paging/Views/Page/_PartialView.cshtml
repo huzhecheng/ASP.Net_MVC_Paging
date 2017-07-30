@@ -1,0 +1,44 @@
+﻿@model Paging.Controllers.ViewModel
+@using Paging.Helper
+
+
+
+<table>
+	<thead>
+		<tr>
+			<th>
+				Name
+			</th>
+			<th>
+				City
+			</th>
+			<th>
+				Country
+			</th>
+			<th>
+				Phone
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model.CustomerItem)
+			{
+			<tr>
+				<td>
+					@item.Name
+				</td>
+				<td>
+					@item.City
+				</td>
+				<td>
+					@item.Country
+				</td>
+				<td>
+					@item.Phone
+				</td>
+			</tr>
+			}
+	</tbody>
+</table>
+
+@Html.PageHelper(Model.CustomerItem)
