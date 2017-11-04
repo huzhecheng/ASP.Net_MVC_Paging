@@ -5,6 +5,11 @@
 }
 
 <style>
+	#_PartialView {
+		float: left;
+		position: relative;
+	}
+
 	table {
 		border: 2px solid #f9f9f9;
 		border-radius: 3px;
@@ -51,6 +56,34 @@
 		font-weight: bolder;
 		border-bottom: 2px solid rgb(255, 140, 0) !important;
 	}
+
+	.Loading {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		top: 0;
+		left: 0;
+		height: 100%;
+		width: 100%;
+		position: absolute;
+		text-align: center;
+		z-index: 9999;
+		background-color: rgba(255,255,255,0.3);
+	}
+
+		.Loading::after {
+			position: relative;
+			content: ' ';
+			height: 45px;
+			width: 45px;
+			background: -webkit-linear-gradient(rgba(143, 143, 143,0.3),rgba(143, 143, 143,1));
+			background-image: url('../../Image/Loading.svg');
+			background-position: center;
+			background-size: contain;
+			background-position: right;
+			background-repeat: no-repeat;
+		}
 </style>
 
 <div id="_PartialView">
@@ -69,7 +102,11 @@
 		})
 
 		function GetData(Page) {
-			$.ajax({
+			setLoading($('#_PartialView'));
+			clearTimeout(timer);
+
+			var timer = setTimeout(function () {
+				$.ajax({
 				type: 'Post',
 				data: JSON.stringify({ 'Page': Page }),
 				contentType: 'application/json; charset=utf-8',
@@ -79,8 +116,24 @@
 					$('#_PartialView').html(data);
 				}, error: function () {
 					alert('Error');
+				}, complete: function () {
+					removeLoading($('#_PartialView'));
 				}
 			});
+			}, 1000);
+		}
+
+
+		var setLoading = function (TableControl) {
+			TableControl.append($('<div>').addClass('Loading'))
+		}
+
+		var removeLoading = function (TableControl) {
+			TableControl.find('.Loading').remove();
+		}
+
+		var IsLoading = function (TableControl) {
+			return TableControl.find('.Loading').length > 0;
 		}
 	</script>
 }
