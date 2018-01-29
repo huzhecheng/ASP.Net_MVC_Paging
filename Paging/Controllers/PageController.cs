@@ -1,6 +1,6 @@
-﻿using Paging.Extention;
-using Paging.Interface;
+﻿using Paging.Interface;
 using Paging.Models;
+using Paging.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,13 +11,13 @@ namespace Paging.Controllers
 {
 	public class PageController : Controller
 	{
-		private Service dataservice = new Service();
+		private DataService service = new DataService();
 
 		public ActionResult PageDemo()
 		{	
 			var model = new ViewModel
 			{
-				CustomerItem = dataservice.Fun_GCustomer(1, 10)
+				CustomerItem = service.GetCustomer(1)
 			};
 
 			return View(model);
@@ -28,22 +28,10 @@ namespace Paging.Controllers
 		{
 			var model = new ViewModel
 			{
-				CustomerItem = dataservice.Fun_GCustomer(Page, 10)
+				CustomerItem = service.GetCustomer(Page)
 			};
 
 			return PartialView("_PartialView", model);
-		}
-	}
-
-	public class Service
-	{
-		private NorthwindNETEntities db = new NorthwindNETEntities();
-
-		public IPageList<Customer> Fun_GCustomer(int NowPage, int PageSize)
-		{
-			var CustomerData = db.Customer.OrderBy(x => x.ID).SkipTakeList(NowPage, PageSize);
-
-			return CustomerData;
 		}
 	}
 
