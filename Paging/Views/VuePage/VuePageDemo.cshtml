@@ -1,0 +1,131 @@
+﻿
+@{
+	ViewBag.Title = "Vue-PageDemo";
+}
+
+<style>
+	table {
+		border: 2px solid #f9f9f9;
+		border-radius: 3px;
+		background-color: #fff;
+	}
+
+	th {
+		background-color: #42b2b9;
+		color: rgba(255,255,255,0.66);
+	}
+
+	td {
+		background-color: #f9f9f9;
+	}
+
+	th, td {
+		min-width: 120px;
+		padding: 10px 20px;
+	}
+
+	.pagination {
+		margin: 5px 0 !important;
+	}
+
+		.pagination > li > a {
+			font-size: 18px;
+			color: rgba(82, 80, 80, 0.86);
+			cursor: pointer;
+			padding: 6px 10px !important;
+			border: none;
+			border-radius: 0 !important;
+		}
+
+			.pagination > li > a:hover {
+				box-shadow: 4px 4px 12px -2px rgba(10%, 10%, 20%, .25);
+			}
+
+	.nowpage {
+		color: rgb(255, 140, 0) !important;
+		font-weight: bolder;
+		border-bottom: 2px solid rgb(255, 140, 0) !important;
+	}
+</style>
+
+<div id="app">
+	<table>
+		<thead>
+			<tr>
+				<th>
+					Name
+				</th>
+				<th>
+					City
+				</th>
+				<th>
+					Country
+				</th>
+				<th>
+					Phone
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr v-for="(item, index) in Customers">
+				<td>
+					${item.Name}
+				</td>
+				<td>
+					${item.City}
+				</td>
+				<td>
+					${item.Country}
+				</td>
+				<td>
+					${item.Phone}
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<ul class="pagination">
+		<li
+			v-bind:class="{'disabled': (Pageinfo.NowPage  === 1)}"
+			@@click.prevent="setPage(Pageinfo.NowPage - 1)">
+			<a href="#">Prev</a>
+		</li>
+		<li v-for="index in Pageinfo.MaxPage"		
+			@@click.prevent="setPage(index)">
+			<a v-bind:class="{'nowpage': (Pageinfo.NowPage === (index))}"
+			   href="#">${index}</a>
+		</li>
+		<li
+			v-bind:class="{'disabled': (Pageinfo.NowPage  === Pageinfo.MaxPage)}"
+			@@click.prevent="setPage(Pageinfo.NowPage + 1)">
+			<a href="#">Next</a>
+		</li>
+	</ul>
+</div>
+
+@section scripts{
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+	<script>
+		var Vue = new Vue({
+			el: '#app',
+			delimiters: ['${', '}'],
+			data: {
+				Customers: [],
+				Pageinfo: {}
+			},
+			mounted: function () {
+				this.setPage(1);
+			},
+			methods: {
+				setPage(page) {
+					var self = this;
+					$.post('/VuePage/GetCustomer', { "Page": page },
+						function (response) {
+							self.Pageinfo = response.pageinfo;
+							self.Customers = response.data;
+						}
+					);
+				}		
+			}
+		})
+	</script>
+}
